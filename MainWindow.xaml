@@ -1,0 +1,87 @@
+﻿<Window x:Class="AudioTranscriptionApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:helpers="clr-namespace:AudioTranscriptionApp.Helpers"
+        mc:Ignorable="d"
+        Title="Windows Audio Transcription" Height="720" Width="1100"
+        WindowStartupLocation="CenterScreen" AllowDrop="True"
+        DragOver="Window_DragOver" Drop="Window_Drop">
+    <Window.Resources>
+        <helpers:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+    </Window.Resources>
+    <Grid Margin="16">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="260" />
+            <ColumnDefinition Width="16" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Column="0">
+            <GroupBox Header="Queue">
+                <StackPanel Margin="6">
+                    <ListBox ItemsSource="{Binding Queue}" DisplayMemberPath="FileName" Height="180" />
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="Recent Files" Margin="0,12,0,0">
+                <StackPanel Margin="6">
+                    <ListBox ItemsSource="{Binding RecentFiles}" SelectedItem="{Binding SelectedRecentFile}" Height="220" />
+                    <Button Content="Load Selected" Command="{Binding LoadRecentCommand}" Margin="0,8,0,0" />
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
+
+        <StackPanel Grid.Column="2">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Windows Audio Transcription" FontSize="22" FontWeight="SemiBold" />
+                <Button Grid.Column="1" Content="Settings" Command="{Binding OpenSettingsCommand}" Margin="8,0,0,0" />
+            </Grid>
+
+            <Grid Margin="0,12,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Button Content="Select Audio File" Command="{Binding SelectFileCommand}" Margin="0,0,8,0"
+                        IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBooleanConverter}}" />
+                <Button Grid.Column="1" Content="Start Transcription" Command="{Binding StartTranscriptionCommand}" Margin="0,0,8,0" />
+                <TextBox Grid.Column="2" Text="{Binding SelectedFilePath}" IsReadOnly="True" />
+                <TextBlock Grid.Column="3" Text="{Binding DurationText, StringFormat=Duration: {0}}"
+                           Margin="8,0,0,0" VerticalAlignment="Center" />
+            </Grid>
+
+            <TextBlock Text="{Binding SelectedFileName, StringFormat=Selected: {0}}" Margin="0,6,0,0" Foreground="Gray" />
+
+            <Grid Margin="0,12,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <ProgressBar Value="{Binding ProgressValue}" Height="10" Maximum="100" />
+                <TextBlock Grid.Column="1" Text="{Binding ProgressValue, StringFormat={}{0:0}%}" Margin="8,0,0,0" VerticalAlignment="Center" />
+            </Grid>
+
+            <TextBlock Text="{Binding StatusMessage}" Margin="0,6,0,0" Foreground="Gray" />
+
+            <CheckBox Content="Include timestamps" IsChecked="{Binding IncludeTimestamps}" Margin="0,12,0,0" />
+
+            <TextBox Text="{Binding TranscriptionText}" Margin="0,12,0,0" Height="360"
+                     VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" AcceptsReturn="True" />
+
+            <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                <Button Content="Copy" Command="{Binding CopyTextCommand}" Margin="0,0,8,0" />
+                <Button Content="Save" Command="{Binding SaveTextCommand}" Margin="0,0,8,0" />
+                <Button Content="Clear" Command="{Binding ClearTextCommand}" Margin="0,0,8,0" />
+                <Button Content="New Transcription" Command="{Binding NewTranscriptionCommand}" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>
